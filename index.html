@@ -1,52 +1,131 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>yuuuuu first WebSite</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background-color: #4CAF50;
-      color: white;
-      padding: 20px 0;
-      font-size: 1.5rem;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    æ­¡è¿Žä¾†Yuuuuuuuuuuu
-  </header>
-  <main>
-    <h1>My first Web</h1>
-    <p>æŒ‰æŒ‰éˆ•</p>
-    <button onclick="showMessage()">æŒ‰æˆ‘</button>
-  </main>
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { auth, googleSignIn, signOutUser } from "@/lib/firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 
-  <script>
-    function showMessage() {
-      alert("æ—©å®‰åˆå®‰æ™šå®‰");
+export default function BookMarket() {
+  const [books, setBooks] = useState([
+    { id: 1, title: "­pºâ¾÷·§½×", price: "NT$300", condition: "¨}¦n", seller: "¤p©ú", image: "" },
+    { id: 2, title: "·L¿n¤À", price: "NT$450", condition: "ªñ·s", seller: "¤pµØ", image: "" },
+  ]);
+  const [newBook, setNewBook] = useState({ title: "", price: "", condition: "", image: "" });
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [user] = useAuthState(auth);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [currentChat, setCurrentChat] = useState(null);
+  const [newMessage, setNewMessage] = useState("");
+
+  const addBook = () => {
+    setBooks([...books, { id: books.length + 1, ...newBook, seller: user?.displayName || "°Î¦W" }]);
+    setNewBook({ title: "", price: "", condition: "", image: "" });
+    setIsDialogOpen(false);
+  };
+
+  const startChat = (seller) => {
+    setCurrentChat(seller);
+    setChatOpen(true);
+    setChatMessages([]);
+  };
+
+  const sendMessage = () => {
+    if (newMessage.trim() !== "") {
+      setChatMessages([...chatMessages, { sender: user.displayName, text: newMessage }]);
+      setNewMessage("");
     }
-  </script>
-</body>
-</html>
+  };
+
+  const filteredBooks = books.filter(book => book.title.includes(searchQuery));
+
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">¤G¤â®Ñ¥æ©ö¥­¥x</h1>
+      {user ? (
+        <div className="mb-4 flex justify-between">
+          <span>Åwªï, {user.displayName}</span>
+          <Button onClick={signOutUser}>µn¥X</Button>
+        </div>
+      ) : (
+        <Button onClick={googleSignIn}>¨Ï¥Î Google µn¤J</Button>
+      )}
+      <Input
+        placeholder="·j´M®ÑÄy..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="mb-4"
+      />
+      <Button onClick={() => setIsDialogOpen(true)} disabled={!user}>¤W¬[®ÑÄy</Button>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        {filteredBooks.map((book) => (
+          <Card key={book.id}>
+            <CardContent className="p-4">
+              {book.image && <img src={book.image} alt={book.title} className="w-full h-32 object-cover mb-2" />}
+              <h2 className="text-lg font-semibold">{book.title}</h2>
+              <p className="text-sm text-gray-500">»ù®æ: {book.price}</p>
+              <p className="text-sm text-gray-500">ª¬ªp: {book.condition}</p>
+              <p className="text-sm text-gray-700">½æ®a: {book.seller}</p>
+              <Button className="mt-2" onClick={() => startChat(book.seller)}>Ápµ¸½æ®a</Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>¤W¬[¤G¤â®Ñ</DialogTitle>
+          </DialogHeader>
+          <Input
+            placeholder="®Ñ¦W"
+            value={newBook.title}
+            onChange={(e) => setNewBook({ ...newBook, title: e.target.value })}
+            className="mb-2"
+          />
+          <Input
+            placeholder="»ù®æ"
+            value={newBook.price}
+            onChange={(e) => setNewBook({ ...newBook, price: e.target.value })}
+            className="mb-2"
+          />
+          <Input
+            placeholder="®Ñªp"
+            value={newBook.condition}
+            onChange={(e) => setNewBook({ ...newBook, condition: e.target.value })}
+            className="mb-2"
+          />
+          <Input
+            type="file"
+            onChange={(e) => setNewBook({ ...newBook, image: URL.createObjectURL(e.target.files[0]) })}
+            className="mb-2"
+          />
+          <Button onClick={addBook} disabled={!user}>½T»{¤W¬[</Button>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={chatOpen} onOpenChange={setChatOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>»P {currentChat} ²á¤Ñ</DialogTitle>
+          </DialogHeader>
+          <div className="h-40 overflow-y-auto border p-2 mb-2">
+            {chatMessages.map((msg, index) => (
+              <div key={index} className={`mb-1 ${msg.sender === user.displayName ? "text-right" : "text-left"}`}>
+                <span className="text-sm font-semibold">{msg.sender}: </span>
+                <span>{msg.text}</span>
+              </div>
+            ))}
+          </div>
+          <Input
+            placeholder="¿é¤J°T®§..."
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            className="mb-2"
+          />
+          <Button onClick={sendMessage}>µo°e</Button>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
