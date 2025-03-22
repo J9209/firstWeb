@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate  # 載入 Flask-Migrate 用於資料庫遷移
+import os
 
 app = Flask(__name__)
 
@@ -73,4 +74,6 @@ def buy_book(book_id):
         return "庫存不足，無法購買", 400  # 如果庫存為 0，顯示錯誤
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
