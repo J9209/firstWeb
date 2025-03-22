@@ -8,8 +8,8 @@ import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function BookMarket() {
   const [books, setBooks] = useState([
-    { id: 1, title: "­pºâ¾÷·§½×", price: "NT$300", condition: "¨}¦n", seller: "¤p©ú", image: "" },
-    { id: 2, title: "·L¿n¤À", price: "NT$450", condition: "ªñ·s", seller: "¤pµØ", image: "" },
+    { id: 1, title: "è¨ˆç®—æ©Ÿæ¦‚è«–", price: "NT$300", condition: "è‰¯å¥½", seller: "å°æ˜", image: "" },
+    { id: 2, title: "å¾®ç©åˆ†", price: "NT$450", condition: "è¿‘æ–°", seller: "å°è¯", image: "" },
   ]);
   const [newBook, setNewBook] = useState({ title: "", price: "", condition: "", image: "" });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -21,7 +21,7 @@ export default function BookMarket() {
   const [newMessage, setNewMessage] = useState("");
 
   const addBook = () => {
-    setBooks([...books, { id: books.length + 1, ...newBook, seller: user?.displayName || "°Î¦W" }]);
+    setBooks([...books, { id: books.length + 1, ...newBook, seller: user?.displayName || "åŒ¿å" }]);
     setNewBook({ title: "", price: "", condition: "", image: "" });
     setIsDialogOpen(false);
   };
@@ -43,32 +43,32 @@ export default function BookMarket() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">¤G¤â®Ñ¥æ©ö¥­¥x</h1>
+      <h1 className="text-2xl font-bold mb-4">äºŒæ‰‹æ›¸äº¤æ˜“å¹³å°</h1>
       {user ? (
         <div className="mb-4 flex justify-between">
-          <span>Åwªï, {user.displayName}</span>
-          <Button onClick={signOutUser}>µn¥X</Button>
+          <span>æ­¡è¿, {user.displayName}</span>
+          <Button onClick={signOutUser}>ç™»å‡º</Button>
         </div>
       ) : (
-        <Button onClick={googleSignIn}>¨Ï¥Î Google µn¤J</Button>
+        <Button onClick={googleSignIn}>ä½¿ç”¨ Google ç™»å…¥</Button>
       )}
       <Input
-        placeholder="·j´M®ÑÄy..."
+        placeholder="æœå°‹æ›¸ç±..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         className="mb-4"
       />
-      <Button onClick={() => setIsDialogOpen(true)} disabled={!user}>¤W¬[®ÑÄy</Button>
+      <Button onClick={() => setIsDialogOpen(true)} disabled={!user}>ä¸Šæ¶æ›¸ç±</Button>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         {filteredBooks.map((book) => (
           <Card key={book.id}>
             <CardContent className="p-4">
               {book.image && <img src={book.image} alt={book.title} className="w-full h-32 object-cover mb-2" />}
               <h2 className="text-lg font-semibold">{book.title}</h2>
-              <p className="text-sm text-gray-500">»ù®æ: {book.price}</p>
-              <p className="text-sm text-gray-500">ª¬ªp: {book.condition}</p>
-              <p className="text-sm text-gray-700">½æ®a: {book.seller}</p>
-              <Button className="mt-2" onClick={() => startChat(book.seller)}>Ápµ¸½æ®a</Button>
+              <p className="text-sm text-gray-500">åƒ¹æ ¼: {book.price}</p>
+              <p className="text-sm text-gray-500">ç‹€æ³: {book.condition}</p>
+              <p className="text-sm text-gray-700">è³£å®¶: {book.seller}</p>
+              <Button className="mt-2" onClick={() => startChat(book.seller)}>è¯çµ¡è³£å®¶</Button>
             </CardContent>
           </Card>
         ))}
@@ -76,22 +76,22 @@ export default function BookMarket() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>¤W¬[¤G¤â®Ñ</DialogTitle>
+            <DialogTitle>ä¸Šæ¶äºŒæ‰‹æ›¸</DialogTitle>
           </DialogHeader>
           <Input
-            placeholder="®Ñ¦W"
+            placeholder="æ›¸å"
             value={newBook.title}
             onChange={(e) => setNewBook({ ...newBook, title: e.target.value })}
             className="mb-2"
           />
           <Input
-            placeholder="»ù®æ"
+            placeholder="åƒ¹æ ¼"
             value={newBook.price}
             onChange={(e) => setNewBook({ ...newBook, price: e.target.value })}
             className="mb-2"
           />
           <Input
-            placeholder="®Ñªp"
+            placeholder="æ›¸æ³"
             value={newBook.condition}
             onChange={(e) => setNewBook({ ...newBook, condition: e.target.value })}
             className="mb-2"
@@ -101,13 +101,13 @@ export default function BookMarket() {
             onChange={(e) => setNewBook({ ...newBook, image: URL.createObjectURL(e.target.files[0]) })}
             className="mb-2"
           />
-          <Button onClick={addBook} disabled={!user}>½T»{¤W¬[</Button>
+          <Button onClick={addBook} disabled={!user}>ç¢ºèªä¸Šæ¶</Button>
         </DialogContent>
       </Dialog>
       <Dialog open={chatOpen} onOpenChange={setChatOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>»P {currentChat} ²á¤Ñ</DialogTitle>
+            <DialogTitle>èˆ‡ {currentChat} èŠå¤©</DialogTitle>
           </DialogHeader>
           <div className="h-40 overflow-y-auto border p-2 mb-2">
             {chatMessages.map((msg, index) => (
@@ -118,12 +118,12 @@ export default function BookMarket() {
             ))}
           </div>
           <Input
-            placeholder="¿é¤J°T®§..."
+            placeholder="è¼¸å…¥è¨Šæ¯..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             className="mb-2"
           />
-          <Button onClick={sendMessage}>µo°e</Button>
+          <Button onClick={sendMessage}>ç™¼é€</Button>
         </DialogContent>
       </Dialog>
     </div>
