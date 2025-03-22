@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上架新書</title>
+</head>
+<body>
+    <h1>上架新書</h1>
+    <form method="POST">
+        <label for="title">書名：</label>
+        <input type="text" id="title" name="title" required><br><br>
+
+        <label for="author">作者：</label>
+        <input type="text" id="author" name="author" required><br><br>
+
+        <label for="price">價格：</label>
+        <input type="number" id="price" name="price" step="0.01" required><br><br>
+
+        <label for="description">描述：</label>
+        <textarea id="description" name="description"></textarea><br><br>
+
+        <button type="submit">上架書籍</button>
+    </form>
+
+    <br>
+    <a href="{{ url_for('index') }}">返回書籍列表</a>
+</body>
+</html>

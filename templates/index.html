@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二手書店</title>
+</head>
+<body>
+    <h1>二手書店</h1>
+    <a href="{{ url_for('add_book') }}">上架新書</a>
+    <h2>書籍列表</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>書名</th>
+                <th>作者</th>
+                <th>價格</th>
+                <th>庫存數量</th>
+                <th>描述</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in books %}
+                <tr>
+                    <td><a href="{{ url_for('book_detail', book_id=book.id) }}">{{ book.title }}</a></td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.price }}</td>
+                    <td>{{ book.quantity }}</td>
+                    <td>{{ book.description }}</td>
+                    <td>
+                        {% if book.quantity > 0 %}
+                            <form action="{{ url_for('buy_book', book_id=book.id) }}" method="POST">
+                                <button type="submit">購買</button>
+                            </form>
+                        {% else %}
+                            <span>已下架</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">目前沒有任何書籍上架</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

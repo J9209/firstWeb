@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ book.title }}</title>
+</head>
+<body>
+    <h1>{{ book.title }}</h1>
+    <p>作者: {{ book.author }}</p>
+    <p>價格: {{ book.price }}</p>
+    <p>描述: {{ book.description }}</p>
+    <p>庫存數量: {{ book.quantity }}</p>
+    
+    {% if book.quantity > 0 %}
+        <form action="{{ url_for('buy_book', book_id=book.id) }}" method="POST">
+            <button type="submit">購買</button>
+        </form>
+    {% else %}
+        <p>該書已售完，無法購買。</p>
+    {% endif %}
+
+    <a href="{{ url_for('index') }}">返回書籍列表</a>
+</body>
+</html>
